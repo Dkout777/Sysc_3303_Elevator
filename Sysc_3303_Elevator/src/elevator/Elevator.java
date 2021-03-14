@@ -27,7 +27,7 @@ public class Elevator implements Runnable{
 	private int nextFloorPos = 0;// position of next floor press in array to send
 	private ElevatorState currentState = ElevatorState.Waiting;
 	private boolean up;
-	private boolean [] buttons;
+	private boolean [] buttons;// array of buttons
 	
 
 	/**
@@ -35,7 +35,7 @@ public class Elevator implements Runnable{
 	 * 
 	 * @param elevatorChannel, receive the channel, elevatorChannel is used for putting inputs into scheduler, while receive is used for getting inputs.
 	 */
-	public Elevator(Channel subsystemToElevator, Channel elevatorToSubsystem, int buttonAmount ) {
+	public Elevator(Channel subsystemToElevator, Channel elevatorToSubsystem,int elevatorId, int buttonAmount ) {
 		
 		this.subsystemToElevator = subsystemToElevator;
 		this.elevatorToSubsystem = elevatorToSubsystem;
