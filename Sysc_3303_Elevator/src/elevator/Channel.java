@@ -13,16 +13,22 @@ public class Channel {
 	 * 
 	 * @return null if data is null other wise it empties the channel and returns the data
 	 */
-	public synchronized Data getData() {
+	public synchronized Data getData(int eID) {
+		
 		if(empty()) {
 			notifyAll();
 			return null;
 		}
-		System.out.println("took"+d.toString()+" out of the channel");
-		Data dRet = d;
-		d = null;
+		int id = d.getElevatorId();
+		if(id == eID || eID == 4) {
+			System.out.println("took"+d.toString()+" out of the channel");
+			Data dRet = d;
+			d = null;
+			notifyAll();
+			return dRet;
+		}
 		notifyAll();
-		return dRet;
+		return null;
 	}
 	/**
 	 * waits until the channel is empty and puts a data in the channel
@@ -40,9 +46,6 @@ public class Channel {
 		this.d = d;
 		System.out.println("put "+d.toString()+" into the channel");
 		notifyAll();
-	}
-	public int checkElevatorId() {
-		return d.getElevatorId();
 	}
 	
 	/**

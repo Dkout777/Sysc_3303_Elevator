@@ -3,11 +3,12 @@ package elevator;
 import java.util.ArrayList;
 
 public class Data {
-	int requestType;// 0 is the start moving request, 1 is the floor update and 3 is the button update
-	int elevatorId;
-    boolean stop,up;
-    ArrayList<Integer> buttonsPressed;
-    int floor;
+	private int requestType;// 0 is the start moving request, 1 is the floor update and 3 is the button update
+	private int elevatorId;
+    private boolean stop,up;
+    private ArrayList<Integer> buttonsPressed;
+    private int floor;
+    private boolean moving;
     /**
      * Constructor for starting move requests
      * @param elevatorId elevator the request is sent to.
@@ -18,6 +19,7 @@ public class Data {
     	this.elevatorId = elevatorId;
     	this.up = up;   	
     }
+    
     /**
      * Constructor for floor update packets
      * @param elevatorId elevator the request is sent to.
@@ -39,6 +41,12 @@ public class Data {
     	this.requestType = 3;
     	this.elevatorId = elevatorId;
     	this.buttonsPressed = buttonsPressed;
+    	
+    }
+    
+    public String toString() {
+    	String x = requestType +", " + elevatorId + ", " + up; 
+    	return x;
     	
     }
     /**

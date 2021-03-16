@@ -9,9 +9,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class ElevatorSubsystem implements Runnable, ElevatorInterface {
-	Channel subsystemToElevator;
-	Channel elevatorToSubsystem;
-	ElevatorChannel elevatorServer;
+	private Channel subsystemToElevator;
+	private Channel elevatorToSubsystem;
+	private ElevatorChannel elevatorServer;
 
 	public ElevatorSubsystem(Channel subsystemToElevator, Channel elevatorToSubsystem) {
 		super();
@@ -90,9 +90,12 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void sendUpdate() {
 		Data toSend = null;
 		while (true) {
-			toSend = elevatorToSubsystem.getData();
+			toSend = elevatorToSubsystem.getData(4);
+			
 			if (toSend != null) {
+				
 				try {
+					System.out.println("Elevator Subsystem sending back data " + toSend.getUp() +" " + toSend.getElevatorId());
 					elevatorServer.startedMoving(toSend.getUp(), toSend.getElevatorId());
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
@@ -115,6 +118,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	@Override
 	public void startElevator(boolean up, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
+		System.out.println("got something");
 		Data data = new Data(elevator, up);
 		subsystemToElevator.putData(data);
 	}
@@ -133,6 +137,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void arriveElevator(boolean stop, int floor, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, stop, floor);
+		System.out.println("got something");
 		subsystemToElevator.putData(data);
 
 	}
@@ -150,6 +155,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void buttonPushed(ArrayList<Integer> buttonList, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, buttonList);
+		System.out.println("got something");
 		subsystemToElevator.putData(data);
 
 	}

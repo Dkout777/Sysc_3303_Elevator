@@ -17,16 +17,14 @@ public class Elevator implements Runnable{
 	private enum ElevatorState{//Possible state for elevator
 		Waiting,DoorsClosing,DoorOpening,Moving
 	}
-	int elevatorId;
+	private int elevatorId;
 	private Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
-	private int currentFloor = 1;
-	private final int floorTraversalTime = 7; //time it takes to traverse a floor
+	private int currentFloor = 0;
 	private final int doorMoveTime =3; // time it takes to open/close doors
 	private long startingTime;// Time taken when program is first run
-	private int nextFloorPos = 0;// position of next floor press in array to send
 	private ElevatorState currentState = ElevatorState.Waiting;
-	private boolean up;
+	private boolean up = false;
 	private boolean [] buttons;// array of buttons
 	
 
@@ -36,7 +34,7 @@ public class Elevator implements Runnable{
 	 * @param elevatorChannel, receive the channel, elevatorChannel is used for putting inputs into scheduler, while receive is used for getting inputs.
 	 */
 	public Elevator(Channel subsystemToElevator, Channel elevatorToSubsystem,int elevatorId, int buttonAmount ) {
-		
+		this.elevatorId = elevatorId;
 		this.subsystemToElevator = subsystemToElevator;
 		this.elevatorToSubsystem = elevatorToSubsystem;
 		buttons = new boolean [buttonAmount];
@@ -75,8 +73,8 @@ public class Elevator implements Runnable{
 		
 		while(true) {
 			Data receivedData;
-			if(!subsystemToElevator.empty() && subsystemToElevator.checkElevatorId() == elevatorId){
-				receivedData = subsystemToElevator.getData();
+			if(!subsystemToElevator.empty()  && currentState != ElevatorState.Waiting){
+				receivedData = subsystemToElevator.getData(elevatorId);
 				switch(receivedData.getRequestType()){
 				case 1:
 					if(currentState == ElevatorState.Moving) {
@@ -130,16 +128,17 @@ public class Elevator implements Runnable{
 			//This state simulates the elevator waiting for a request
 			// Will transition to closing door state
 			case Waiting:
+					received = subsystemToElevator.getData(elevatorId);
+					if(received != null) {
+						System.out.println("Elevator " + elevatorId+ " got something");
+						up = received.getUp();
+						
+						System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
+						System.out.println("Elevator " + elevatorId+": Doors are closing");
+						currentState = ElevatorState.DoorsClosing;
+					}
+					
 				
-				if(!elevatorToSubsystem.empty() &&  elevatorToSubsystem.checkElevatorId() == elevatorId) {
-					received = elevatorToSubsystem.getData();
-					up = received.getUp();
-					
-					System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
-					System.out.println("Elevator " + elevatorId+": Doors are closing");
-					currentState = ElevatorState.DoorsClosing;
-					
-				}
 				break;
 			// This state simulates the elevator moving from floor to floor
 			//From this state it will transition to opening door state
@@ -168,8 +167,8 @@ public class Elevator implements Runnable{
 				if((System.nanoTime()- stateStartTime)/1000000000 >= doorMoveTime) {
 					System.out.println("The elevator closed the doors.");
 					elevatorToSubsystem.putData(new Data(elevatorId, true));
-					currentState = ElevatorState.Moving;
-					System.out.println("The elevator is starting to move.");
+					currentState = ElevatorState.Moving; 
+					System.out.println("Elevator"+ elevatorId+ " is starting to move.");
 					stateStartTime = System.nanoTime();
 				}
 					
