@@ -137,7 +137,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void arriveElevator(boolean stop, int floor, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, stop, floor);
-		System.out.println("got something from scheduler");
+		System.out.println("got something from scheduler arriving at floor "+floor+" for elevator "+ elevator);
 		subsystemToElevator.putData(data);
 
 	}
