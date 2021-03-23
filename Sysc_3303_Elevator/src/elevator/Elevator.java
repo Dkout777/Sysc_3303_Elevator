@@ -20,7 +20,7 @@ public class Elevator implements Runnable{
 	private int elevatorId;
 	private Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
-	private int currentFloor = 0;
+	private int currentFloor = 1;
 	private final int doorMoveTime =3; // time it takes to open/close doors
 	private long startingTime;// Time taken when program is first run
 	private ElevatorState currentState = ElevatorState.Waiting;
@@ -110,7 +110,7 @@ public class Elevator implements Runnable{
 	 */
 	@Override
 	public void run() {
-		currentFloor = 0;
+		
 		startingTime = System.nanoTime();
 		Runnable task1 = () ->{this.checkForUpdate();};
 		new Thread(task1).start();

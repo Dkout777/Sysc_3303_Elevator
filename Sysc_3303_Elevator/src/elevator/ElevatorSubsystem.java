@@ -118,7 +118,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	@Override
 	public void startElevator(boolean up, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("got something");
+		System.out.println("got something from scheduler");
 		Data data = new Data(elevator, up);
 		subsystemToElevator.putData(data);
 	}
@@ -137,7 +137,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void arriveElevator(boolean stop, int floor, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, stop, floor);
-		System.out.println("got something");
+		System.out.println("got something from scheduler");
 		subsystemToElevator.putData(data);
 
 	}
@@ -155,7 +155,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void buttonPushed(ArrayList<Integer> buttonList, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, buttonList);
-		System.out.println("got something");
+		System.out.println("got something from scheduler");
 		subsystemToElevator.putData(data);
 
 	}
