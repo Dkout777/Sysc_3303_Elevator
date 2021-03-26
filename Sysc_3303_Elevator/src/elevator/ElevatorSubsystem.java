@@ -7,16 +7,20 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	private Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
 	private ElevatorChannel elevatorServer;
+	private volatile Queue <Data> requests;
 
 	public ElevatorSubsystem(Channel subsystemToElevator, Channel elevatorToSubsystem) {
 		super();
 		this.subsystemToElevator = subsystemToElevator;
 		this.elevatorToSubsystem = elevatorToSubsystem;
+		requests = new LinkedList();
 		Registry schedulerRegistry;
 		boolean done = false;
 		while (!done) {
@@ -87,7 +91,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 
 
 
-	public void sendUpdate() {
+	public void sendUpdateToScheduler() {
 		Data toSend = null;
 		while (true) {
 			toSend = elevatorToSubsystem.getData(4);
@@ -105,6 +109,16 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 		}
 
 	}
+	
+	public void sendUpdateToElevators(){
+		while(true) {
+			//System.out.println(requests.isEmpty() +" " + requests.size());
+			if (!requests.isEmpty()) {
+				System.out.println(requests.peek());
+				subsystemToElevator.putData(requests.remove());
+			}
+		}
+	}
 
 	/**
 	 * Update letting elevator know to start moving
@@ -118,9 +132,11 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	@Override
 	public void startElevator(boolean up, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("got something from scheduler");
+		System.out.println("got start signal from scheduler");
 		Data data = new Data(elevator, up);
-		subsystemToElevator.putData(data);
+		requests.add(data);
+		
+		System.out.println(requests.isEmpty() +" " + requests.size());
 	}
 
 	/**
@@ -137,8 +153,9 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void arriveElevator(boolean stop, int floor, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, stop, floor);
-		System.out.println("got something from scheduler arriving at floor "+floor+" for elevator "+ elevator);
-		subsystemToElevator.putData(data);
+		System.out.println("got arrival signal from scheduler arriving at floor "+floor+" for elevator "+ elevator);
+		requests.add(data);
+		
 
 	}
 
@@ -155,14 +172,17 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void buttonPushed(ArrayList<Integer> buttonList, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
 		Data data = new Data(elevator, buttonList);
-		System.out.println("got something from scheduler");
-		subsystemToElevator.putData(data);
+		System.out.println("got buttons from scheduler");
+		requests.add(data);
 
 	}
 
 	@Override
 	public void run() {
-		this.sendUpdate();
+		Runnable task1 = () ->{this.sendUpdateToScheduler();};
+		new Thread(task1).start();
+		Runnable task2 = () ->{this.sendUpdateToElevators();};
+		new Thread(task2).start();
 
 	}
 

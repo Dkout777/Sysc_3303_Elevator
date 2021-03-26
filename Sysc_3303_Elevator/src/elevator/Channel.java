@@ -13,6 +13,9 @@ public class Channel {
 	 * 
 	 * @return null if data is null other wise it empties the channel and returns the data
 	 */
+	public Data peekData() {
+		return d;
+	}
 	public synchronized Data getData(int eID) {
 		
 		if(empty()) {

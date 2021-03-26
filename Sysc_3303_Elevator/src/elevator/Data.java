@@ -38,7 +38,7 @@ public class Data {
      * @param buttonsPressed array list containing all the buttons pressed.
      */
     public Data(int elevatorId, ArrayList <Integer> buttonsPressed) {
-    	this.requestType = 3;
+    	this.requestType = 2;
     	this.elevatorId = elevatorId;
     	this.buttonsPressed = buttonsPressed;
     	

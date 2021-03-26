@@ -23,9 +23,10 @@ public class Elevator implements Runnable{
 	private int currentFloor = 1;
 	private final int doorMoveTime =3; // time it takes to open/close doors
 	private long startingTime;// Time taken when program is first run
-	private ElevatorState currentState = ElevatorState.Waiting;
+	private volatile ElevatorState currentState;
 	private boolean up = false;
 	private boolean [] buttons;// array of buttons
+	private volatile float  stateStartTime;
 	
 
 	/**
@@ -38,7 +39,7 @@ public class Elevator implements Runnable{
 		this.subsystemToElevator = subsystemToElevator;
 		this.elevatorToSubsystem = elevatorToSubsystem;
 		buttons = new boolean [buttonAmount];
-		
+		currentState = ElevatorState.Waiting;
 		
 	}
 	
@@ -69,29 +70,20 @@ public class Elevator implements Runnable{
 	/**
 	 * A method run as it's own thread for checking for stop requests or button/ floor changes.
 	 */
-	public  void checkForUpdate() {
-		
+	public  void checkForButtonUpdate() {
+		Data receivedData = null;
+		System.out.println("Task is running");
 		while(true) {
-			Data receivedData;
-			if(!subsystemToElevator.empty()  && currentState != ElevatorState.Waiting){
-				receivedData = subsystemToElevator.getData(elevatorId);
-				switch(receivedData.getRequestType()){
-				case 1:
-					if(currentState == ElevatorState.Moving) {
-						currentFloor = receivedData.getFloor();
-						if (receivedData.getStop() == true) {
-							currentState = ElevatorState.DoorOpening;
-							buttons[currentFloor] = false;
-						}
-						System.out.println("Elevator " + elevatorId + ": Current Floor = " + currentFloor);
-					}
-					break;
-				case 2:
+			
+			if(!subsystemToElevator.empty() && (subsystemToElevator.peekData().getRequestType() !=2)){
+				receivedData =subsystemToElevator.getData(elevatorId);
+				if(receivedData!=null) {
 					for(int i: receivedData.getButtonsPressed()) {
 						buttons[i] = true;
 					}
 					this.printButtons();
 				}
+		}
 				
 				
 			
@@ -99,7 +91,7 @@ public class Elevator implements Runnable{
 			
 			
 		}
-	}
+	
 	/**
 	 * helper method for moving state to know in which direction to transition the floor
 	 */
@@ -112,11 +104,9 @@ public class Elevator implements Runnable{
 	public void run() {
 		
 		startingTime = System.nanoTime();
-		Runnable task1 = () ->{this.checkForUpdate();};
+		Runnable task1 = () ->{this.checkForButtonUpdate();};
 		new Thread(task1).start();
 		Data received = null;
-		float stateStartTime;
-		currentState = ElevatorState.Waiting;
 		System.out.println("elevator is waiting");
 		stateStartTime = System.nanoTime();
 		
@@ -135,7 +125,9 @@ public class Elevator implements Runnable{
 						
 						System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
 						System.out.println("Elevator " + elevatorId+": Doors are closing");
+						
 						currentState = ElevatorState.DoorsClosing;
+						stateStartTime = System.nanoTime();
 					}
 					
 				
@@ -145,6 +137,20 @@ public class Elevator implements Runnable{
 			case Moving:
 				
 				while(currentState == ElevatorState.Moving) {
+					if(!subsystemToElevator.empty() && (subsystemToElevator.peekData().getRequestType() !=2)){
+						received = subsystemToElevator.getData(elevatorId);
+						if(received != null) {
+							currentFloor = received.getFloor();
+							if (received.getStop() == true) {
+								stateStartTime = System.nanoTime();
+								currentState = ElevatorState.DoorOpening;
+								buttons[currentFloor] = false;
+							}
+							System.out.println("Elevator " + elevatorId + ": Current Floor = " + currentFloor);
+							System.out.println("Elevator " + elevatorId+ ": Is now opening the doors");
+							
+						}
+					}
 					
 				}
 					
