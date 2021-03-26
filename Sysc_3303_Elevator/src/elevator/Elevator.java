@@ -75,7 +75,7 @@ public class Elevator implements Runnable{
 		System.out.println("Task is running");
 		while(true) {
 			
-			if(!subsystemToElevator.empty() && (subsystemToElevator.peekData().getRequestType() !=2)){
+			if(!subsystemToElevator.empty() && (subsystemToElevator.peekData().getRequestType() ==2)){
 				receivedData =subsystemToElevator.getData(elevatorId);
 				if(receivedData!=null) {
 					for(int i: receivedData.getButtonsPressed()) {
@@ -172,7 +172,7 @@ public class Elevator implements Runnable{
 			case DoorsClosing:
 				if((System.nanoTime()- stateStartTime)/1000000000 >= doorMoveTime) {
 					System.out.println("The elevator closed the doors.");
-					elevatorToSubsystem.putData(new Data(elevatorId, true));
+					elevatorToSubsystem.putData(new Data(elevatorId, up));
 					currentState = ElevatorState.Moving; 
 					System.out.println("Elevator"+ elevatorId+ " is starting to move.");
 					stateStartTime = System.nanoTime();

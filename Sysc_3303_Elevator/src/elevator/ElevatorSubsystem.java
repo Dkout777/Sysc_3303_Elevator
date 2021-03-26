@@ -99,8 +99,14 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 			if (toSend != null) {
 				
 				try {
-					System.out.println("Elevator Subsystem sending back data " + toSend.getUp() +" " + toSend.getElevatorId());
-					elevatorServer.startedMoving(toSend.getUp(), toSend.getElevatorId());
+					if(toSend.getRequestType() == 3) {
+						System.out.println("Subsystem signalling that elevator " + toSend.getElevatorId() + " has stopped.");
+						elevatorServer.elevatorStoped(toSend.getElevatorId());
+					}
+					else {
+						System.out.println("Elevator Subsystem sending back data " + toSend.getUp() +" " + toSend.getElevatorId());
+						elevatorServer.startedMoving(toSend.getUp(), toSend.getElevatorId());
+					}
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

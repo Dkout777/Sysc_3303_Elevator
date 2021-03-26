@@ -44,6 +44,12 @@ public class Data {
     	
     }
     
+    public Data(int elevatorId) {
+    	this.requestType = 3;
+    	this.elevatorId = elevatorId;
+    	
+    }
+    
     public String toString() {
     	if(requestType == 0) {
     		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ", Up?: " + up; 
