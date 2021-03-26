@@ -64,6 +64,11 @@ public class Data {
     		return x;
     			
     	}
+    	else if(requestType == 3) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId;
+    		return x;
+    			
+    	}
     	else {
     		String x = "Error";
     		return x;

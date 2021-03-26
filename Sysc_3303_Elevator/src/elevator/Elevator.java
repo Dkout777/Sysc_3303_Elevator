@@ -160,7 +160,7 @@ public class Elevator implements Runnable{
 			case DoorOpening:
 				if((System.nanoTime()- stateStartTime)/1000000000 >= doorMoveTime) {
 					System.out.println("The elevator has opened the doors");
-					elevatorToSubsystem.putData(new Data(elevatorId, false));
+					elevatorToSubsystem.putData(new Data(elevatorId));
 					currentState = ElevatorState.Waiting;
 					System.out.println("Elevator is now waiting");
 					stateStartTime = System.nanoTime();
