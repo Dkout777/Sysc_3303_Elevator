@@ -60,7 +60,7 @@ public class Data {
         	return x;
     	}
     	else if(requestType == 2) {
-    		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ",  button request";
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ",  firstButton: " + buttonsPressed.get(0);
     		return x;
     			
     	}

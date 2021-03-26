@@ -118,17 +118,19 @@ public class Elevator implements Runnable{
 			//This state simulates the elevator waiting for a request
 			// Will transition to closing door state
 			case Waiting:
-					received = subsystemToElevator.getData(elevatorId);
-					if(received != null) {
-						System.out.println("Elevator " + elevatorId+ " got something");
-						up = received.getUp();
-						
-						System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
-						System.out.println("Elevator " + elevatorId+": Doors are closing");
-						
-						currentState = ElevatorState.DoorsClosing;
-						stateStartTime = System.nanoTime();
-					}
+				if(subsystemToElevator.peekData().getRequestType() !=2) {
+						received = subsystemToElevator.getData(elevatorId);
+						if(received != null) {
+							System.out.println("Elevator " + elevatorId+ " got something");
+							up = received.getUp();
+							
+							System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
+							System.out.println("Elevator " + elevatorId+": Doors are closing");
+							
+							currentState = ElevatorState.DoorsClosing;
+							stateStartTime = System.nanoTime();
+						}
+				}
 					
 				
 				break;
