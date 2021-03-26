@@ -5,6 +5,7 @@ public class Channel {
 	 * create a channel with a null data
 	 */
 	public Channel() {
+		
 		d = null;
 
 	}
@@ -16,14 +17,15 @@ public class Channel {
 	public Data peekData() {
 		return d;
 	}
-	public synchronized Data getData(int eID) {
+	public synchronized Data getData(int eID, int request) {
 		
 		if(empty()) {
 			notifyAll();
 			return null;
 		}
 		int id = d.getElevatorId();
-		if(id == eID || eID == 4) {
+		int requestType = d.getRequestType();
+		if((id == eID || eID == 4) && request == requestType) {
 			System.out.println("took"+d.toString()+" out of the channel");
 			Data dRet = d;
 			d = null;
@@ -32,6 +34,21 @@ public class Channel {
 		}
 		notifyAll();
 		return null;
+	}
+	
+	public synchronized Data get() {
+		
+		if(empty()) {
+			notifyAll();
+			return null;
+		}
+	
+		System.out.println("took"+d.toString()+" out of the channel");
+		Data dRet = d;
+		d = null;
+		notifyAll();
+		return dRet;
+		
 	}
 	/**
 	 * waits until the channel is empty and puts a data in the channel

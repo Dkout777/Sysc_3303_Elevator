@@ -94,7 +94,7 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	public void sendUpdateToScheduler() {
 		Data toSend = null;
 		while (true) {
-			toSend = elevatorToSubsystem.getData(4);
+			toSend = elevatorToSubsystem.get();
 			
 			if (toSend != null) {
 				

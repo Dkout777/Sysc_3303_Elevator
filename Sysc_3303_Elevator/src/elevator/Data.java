@@ -2,6 +2,8 @@ package elevator;
 
 import java.util.ArrayList;
 
+
+
 public class Data {
 	private int requestType;// 0 is the start moving request, 1 is the floor update and 3 is the button update
 	private int elevatorId;
@@ -61,6 +63,9 @@ public class Data {
     	}
     	else if(requestType == 2) {
     		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ",  firstButton: " + buttonsPressed.get(0);
+    		for(int button: buttonsPressed) {
+    			System.out.println(button);
+    		}
     		return x;
     			
     	}
