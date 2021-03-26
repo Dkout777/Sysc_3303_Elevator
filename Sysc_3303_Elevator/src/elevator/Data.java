@@ -45,8 +45,26 @@ public class Data {
     }
     
     public String toString() {
-    	String x = requestType +", " + elevatorId + ", " + up; 
-    	return x;
+    	if(requestType == 0) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ", Up?: " + up; 
+        	return x;
+    	}
+    	else if(requestType == 1) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ", Stop?: " + stop + ", floor: " + floor; 
+        	return x;
+    	}
+    	else if(requestType == 2) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ",  button request";
+    		return x;
+    			
+    	}
+    	else {
+    		String x = "Error";
+    		return x;
+    	}
+    	
+    	
+    	
     	
     }
     /**
