@@ -31,5 +31,5 @@ public interface ElevatorInterface extends Remote{
 		 */
 		public void buttonPushed(ArrayList<Integer> buttonList,int elevator) throws RemoteException;
 		
-		public void doorFailure(int elevator) throws RemoteException;
+		public void doorFailure(int elevator) throws RemoteException; 
 }

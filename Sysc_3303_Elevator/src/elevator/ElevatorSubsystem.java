@@ -202,4 +202,13 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 
 	}
 
+	@Override
+	public void doorFailure(int elevator) throws RemoteException {
+		Data data = new Data(elevator, 4);
+		System.out.println("got doorError from scheduler");
+		requests.add(data);
+		
+		
+	}
+
 }

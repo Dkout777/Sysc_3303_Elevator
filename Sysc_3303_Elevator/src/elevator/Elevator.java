@@ -17,6 +17,7 @@ public class Elevator implements Runnable{
 	private enum ElevatorState{//Possible state for elevator
 		Waiting,DoorsClosing,DoorOpening,Moving,OutOfOrder
 	}
+	private boolean doorJam = false;
 	private final int arrivalSensorTimeout = 10;
 	private int elevatorId;
 	private volatile Channel subsystemToElevator;
@@ -87,6 +88,12 @@ public class Elevator implements Runnable{
 						buttons[i] = true;
 					}
 					this.printButtons();
+				}
+			}
+			else {
+				receivedData =subsystemToElevator.getData(elevatorId,4);
+				if(receivedData != null) {
+					doorJam = true;
 				}
 			}
 		}
@@ -179,8 +186,13 @@ public class Elevator implements Runnable{
 					System.out.println("The elevator has opened the doors");
 					elevatorToSubsystem.putData(new Data(elevatorId));
 					currentState = ElevatorState.Waiting;
-					System.out.println("Elevator is now waiting");
+					System.out.println("Elevator " + elevatorId +" Elevator is now waiting");
 					stateStartTime = System.nanoTime();
+				}
+				else if(doorJam = true) {
+					System.out.println("Elevator " +elevatorId+ " door is jammed");
+					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
+					currentState = ElevatorState.OutOfOrder;
 				}
 				
 				break;
@@ -193,6 +205,11 @@ public class Elevator implements Runnable{
 					currentState = ElevatorState.Moving; 
 					System.out.println("Elevator"+ elevatorId+ " is starting to move.");
 					stateStartTime = System.nanoTime();
+				}
+				else if(doorJam = true) {
+					System.out.println("Elevator " +elevatorId+ " door is jammed");
+					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
+					currentState = ElevatorState.OutOfOrder;
 				}
 					
 				break;
