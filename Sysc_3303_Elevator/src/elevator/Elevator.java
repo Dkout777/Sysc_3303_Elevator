@@ -15,8 +15,9 @@ import java.util.Scanner;
 public class Elevator implements Runnable{
 	
 	private enum ElevatorState{//Possible state for elevator
-		Waiting,DoorsClosing,DoorOpening,Moving
+		Waiting,DoorsClosing,DoorOpening,Moving,OutOfOrder
 	}
+	private final int arrivalSensorTimeout = 10;
 	private int elevatorId;
 	private volatile Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
@@ -74,7 +75,7 @@ public class Elevator implements Runnable{
 	/**
 	 * A method run as it's own thread for checking for stop requests or button/ floor changes.
 	 */
-	public  void checkForButtonUpdate() {
+	public  void checkForUpdate() {
 		Data receivedData = null;
 		System.out.println("Task is running");
 		while(true) {			
@@ -109,7 +110,7 @@ public class Elevator implements Runnable{
 	public void run() {
 		
 		startingTime = System.nanoTime();
-		Runnable task1 = () ->{this.checkForButtonUpdate();};
+		Runnable task1 = () ->{this.checkForUpdate();};
 		new Thread(task1).start();
 		Data received = null;
 		System.out.println("elevator is waiting");
@@ -143,7 +144,7 @@ public class Elevator implements Runnable{
 			// This state simulates the elevator moving from floor to floor
 			//From this state it will transition to opening door state
 			case Moving:
-				
+				float errorTimer = System.nanoTime();
 				while(currentState == ElevatorState.Moving) {
 					
 					received = subsystemToElevator.getData(elevatorId,1);
@@ -154,10 +155,16 @@ public class Elevator implements Runnable{
 							currentState = ElevatorState.DoorOpening;
 							buttons[currentFloor] = false;
 							System.out.println("Elevator " + elevatorId+ ": Is now opening the doors");
+							errorTimer = System.nanoTime();
 						}
 						System.out.println("Elevator " + elevatorId + ": Current Floor = " + currentFloor);
 						
 							
+					}
+					if((System.nanoTime()- errorTimer)/1000000000 >= arrivalSensorTimeout){
+						Data errorMessage = new Data(elevatorId,5);
+						currentState = ElevatorState.OutOfOrder;
+						elevatorToSubsystem.putData(errorMessage);
 					}
 					
 					
@@ -189,8 +196,15 @@ public class Elevator implements Runnable{
 				}
 					
 				break;
+			case OutOfOrder:
+					while(true) {
+						
+					}
+				
+		default:
+			break;
 			
-			
+			                                                                   
 			}
 			
 			

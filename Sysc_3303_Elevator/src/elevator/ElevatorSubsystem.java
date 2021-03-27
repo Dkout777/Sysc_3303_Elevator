@@ -103,6 +103,16 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 						System.out.println("Subsystem signalling that elevator " + toSend.getElevatorId() + " has stopped.");
 						elevatorServer.elevatorStoped(toSend.getElevatorId());
 					}
+					else if(toSend.getRequestType() == 4) {
+						System.out.println("Subsystem signalling that elevator " + toSend.getElevatorId() + " has a door jam.");
+						elevatorServer.doorFailure(toSend.getElevatorId());
+						
+					}
+					else if(toSend.getRequestType() == 5) {
+						System.out.println("Subsystem signalling that elevator " + toSend.getElevatorId() + " has a sensor failure.");
+						elevatorServer.sensorFailure(toSend.getElevatorId());
+						
+					}
 					else {
 						System.out.println("Elevator Subsystem sending back data " + toSend.getUp() +" " + toSend.getElevatorId());
 						elevatorServer.startedMoving(toSend.getUp(), toSend.getElevatorId());

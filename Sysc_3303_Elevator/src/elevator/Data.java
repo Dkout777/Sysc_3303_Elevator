@@ -27,7 +27,7 @@ public class Data {
     private boolean moving;
     /**
      * Constructor for starting move requests
-     * @param elevatorId elevator the request is sent to.
+     * @param elevatorId elevator the request is sent to.         
      * @param up boolean for up or down
      */
     public Data(int elevatorId, boolean up) {
@@ -62,6 +62,11 @@ public class Data {
     
     public Data(int elevatorId) {
     	this.requestType = 3;
+    	this.elevatorId = elevatorId;
+    	
+    }
+    public Data(int elevatorId, int requestType) {
+    	this.requestType = requestType;
     	this.elevatorId = elevatorId;
     	
     }
