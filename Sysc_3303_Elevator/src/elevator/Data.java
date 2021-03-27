@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * 
- * @author Dimitry
+ * @author Dimitry Koutchine
  *
  */
 /**
@@ -49,7 +49,7 @@ public class Data {
     	this.floor = floor;
     }
     /**
-     * 
+     * constructor for a button pressed request
      * @param elevatorId which elevator to send to.
      * @param buttonsPressed array list containing all the buttons pressed.
      */
@@ -59,18 +59,28 @@ public class Data {
     	this.buttonsPressed = buttonsPressed;
     	
     }
-    
+    /**
+     * Constructor for a stop signal
+     * @param elevatorId which elevator to send to
+     */
     public Data(int elevatorId) {
     	this.requestType = 3;
     	this.elevatorId = elevatorId;
     	
     }
+    /**
+     * More general constructor that can set request type
+     * @param elevatorId, which elevator
+     * @param requestType
+     */
     public Data(int elevatorId, int requestType) {
     	this.requestType = requestType;
     	this.elevatorId = elevatorId;
     	
     }
-    
+    /**
+     * method that converts the data into a string
+     */
     public String toString() {
     	if(requestType == 0) {
     		String x ="Request: "+  requestType +", Elevator: " + elevatorId + ", Up?: " + up; 
@@ -89,6 +99,16 @@ public class Data {
     			
     	}
     	else if(requestType == 3) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId;
+    		return x;
+    			
+    	}
+    	else if(requestType == 4) {
+    		String x ="Request: "+  requestType +", Elevator: " + elevatorId;
+    		return x;
+    			
+    	}
+    	else if(requestType == 5) {
     		String x ="Request: "+  requestType +", Elevator: " + elevatorId;
     		return x;
     			

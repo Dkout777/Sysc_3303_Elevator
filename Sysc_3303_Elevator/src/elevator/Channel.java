@@ -1,4 +1,9 @@
 package elevator;
+/**
+ * 
+ * @author Isaac, Dimitry
+ *
+ */
 public class Channel {
 	private Data d;
 	/**

@@ -9,13 +9,22 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
-
+/**
+ * 
+ * @author Dimitry Koutchine
+ *
+ */
 public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	private Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
 	private ElevatorChannel elevatorServer;
-	private volatile Queue <Data> requests;
+	private volatile Queue <Data> requests; // requests to be sent to elevators
 
+	/**
+	 * 
+	 * @param subsystemToElevator channel for data sent to elevator from subsystem
+	 * @param elevatorToSubsystem channel for data sent to subsystem from elevator
+	 */
 	public ElevatorSubsystem(Channel subsystemToElevator, Channel elevatorToSubsystem) {
 		super();
 		this.subsystemToElevator = subsystemToElevator;
@@ -90,7 +99,6 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	 */
 
 
-
 	public void sendUpdateToScheduler() {
 		Data toSend = null;
 		while (true) {
@@ -125,7 +133,9 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 		}
 
 	}
-	
+	/**
+	 * Send the first request from request queue to the channel between itself and elevator
+	 */
 	public void sendUpdateToElevators(){
 		while(true) {
 			//System.out.println(requests.isEmpty() +" " + requests.size());
@@ -163,8 +173,6 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	 * @throws RemoteException
 	 */
 
-
-
 	@Override
 	public void arriveElevator(boolean stop, int floor, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
@@ -176,14 +184,11 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	}
 
 	/**
-	 * Update letting elevator know if it reached a new floor or requires to stop.
+	 * Update letting elevator know to change the button display.
 	 * @param buttonList arraylist containing which buttons are lit up
 	 * @param elevator Id that identifies which elevator
 	 * @throws RemoteException
 	 */
-
-
-
 	@Override
 	public void buttonPushed(ArrayList<Integer> buttonList, int elevator) throws RemoteException {
 		// TODO Auto-generated method stub
@@ -202,6 +207,11 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 
 	}
 
+	/**
+	 * Update letting elevator know to do a door failure.
+	 * @param int elevator is id identifying which elevator will have the issue
+	 * @throws RemoteException
+	 */
 	@Override
 	public void doorFailure(int elevator) throws RemoteException {
 		Data data = new Data(elevator, 4);

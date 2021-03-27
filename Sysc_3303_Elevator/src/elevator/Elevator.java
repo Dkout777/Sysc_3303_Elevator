@@ -11,10 +11,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
-
+/**
+ * 
+ * @author Dimitry Koutchine
+ *
+ */
 public class Elevator implements Runnable{
 	
-	private enum ElevatorState{//Possible state for elevator
+	public enum ElevatorState{//Possible state for elevator
 		Waiting,DoorsClosing,DoorOpening,Moving,OutOfOrder
 	}
 	private volatile boolean doorJam = false;
@@ -56,6 +60,16 @@ public class Elevator implements Runnable{
 	public int getCurrentFloor() {
 		return currentFloor;
 	}
+	/**
+	 * getter for currentState
+	 * @return in representing currentFloor
+	 */
+	public ElevatorState getCurrentState() {
+		return currentState;
+	}
+	/**
+	 * method for printing out all active buttons.
+	 */
 	public void printButtons() {
 		System.out.println("The current buttons are lit up:");
 		
@@ -213,12 +227,13 @@ public class Elevator implements Runnable{
 				}
 					
 				break;
+				// This is the state entered after any error occurs
 			case OutOfOrder:
 					System.out.println("Elevator " +elevatorId + ": Is out of order");
-					while(true) {
+					while(true) {             
 						
 					}
-				
+				  
 		default:
 			break;
 			
