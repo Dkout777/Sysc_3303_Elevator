@@ -189,7 +189,7 @@ public class Elevator implements Runnable{
 					System.out.println("Elevator " + elevatorId +" Elevator is now waiting");
 					stateStartTime = System.nanoTime();
 				}
-				else if(doorJam = true) {
+				else if(doorJam == true) {
 					System.out.println("Elevator " +elevatorId+ " door is jammed");
 					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
 					currentState = ElevatorState.OutOfOrder;
@@ -203,10 +203,10 @@ public class Elevator implements Runnable{
 					System.out.println("The elevator closed the doors.");
 					elevatorToSubsystem.putData(new Data(elevatorId, up));
 					currentState = ElevatorState.Moving; 
-					System.out.println("Elevator"+ elevatorId+ " is starting to move.");
+					System.out.println("Elevator"+ elevatorId+ " is starting to move.");  
 					stateStartTime = System.nanoTime();
 				}
-				else if(doorJam = true) {
+				else if(doorJam == true) {
 					System.out.println("Elevator " +elevatorId+ " door is jammed");
 					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
 					currentState = ElevatorState.OutOfOrder;
