@@ -17,7 +17,7 @@ public class Elevator implements Runnable{
 	private enum ElevatorState{//Possible state for elevator
 		Waiting,DoorsClosing,DoorOpening,Moving,OutOfOrder
 	}
-	private boolean doorJam = false;
+	private volatile boolean doorJam = false;
 	private final int arrivalSensorTimeout = 10;
 	private int elevatorId;
 	private volatile Channel subsystemToElevator;
