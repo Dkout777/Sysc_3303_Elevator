@@ -2,8 +2,22 @@ package elevator;
 
 import java.util.ArrayList;
 
-
-
+/**
+ * 
+ * @author Dimitry
+ *
+ */
+/**
+ * Request Types
+ * 0: Start request from scheduler, letting elevator know to start, also when sent other way around lets scheduler know elevator started moving
+ * 1: Arrival request from scheduler, letting elevator know when it reached another floor and when to stop
+ * 2: Button request lets elevator which buttons to light up.
+ * 3: Stop signal elevator sends to scheduler to let it know that elevator opened it's doors
+ * 4: Door jam signal, elevator letting scheduler know that a door has jammed
+ * 5: Sensor error, elevator letting scheduler know that sensor failed.
+ * 
+ * 
+ */
 public class Data {
 	private int requestType;// 0 is the start moving request, 1 is the floor update and 3 is the button update
 	private int elevatorId;

@@ -153,14 +153,16 @@ public class Elevator implements Runnable{
 							stateStartTime = System.nanoTime();
 							currentState = ElevatorState.DoorOpening;
 							buttons[currentFloor] = false;
+							System.out.println("Elevator " + elevatorId+ ": Is now opening the doors");
 						}
 						System.out.println("Elevator " + elevatorId + ": Current Floor = " + currentFloor);
-						System.out.println("Elevator " + elevatorId+ ": Is now opening the doors");
+						
 							
 					}
 					
 					
 				}
+				
 					
 				break;
 			// This state simulates the time it takes to open doors
