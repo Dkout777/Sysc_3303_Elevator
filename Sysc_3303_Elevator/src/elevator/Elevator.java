@@ -214,6 +214,7 @@ public class Elevator implements Runnable{
 					
 				break;
 			case OutOfOrder:
+					System.out.println("Elevator " +elevatorId + ": Is out of order");
 					while(true) {
 						
 					}
