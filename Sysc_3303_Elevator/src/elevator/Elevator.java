@@ -22,7 +22,7 @@ public class Elevator implements Runnable{
 		Waiting,DoorsClosing,DoorOpening,Moving,OutOfOrder
 	}
 	private volatile boolean doorJam = false;
-	private final int arrivalSensorTimeout = 10;
+	private final int arrivalSensorTimeout = 15;
 	private int elevatorId;
 	private volatile Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
