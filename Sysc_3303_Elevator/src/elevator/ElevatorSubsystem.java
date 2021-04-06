@@ -53,10 +53,10 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 		Channel subsystemToElevator = new Channel();
 		Channel elevatorToSubsystem = new Channel();
 
-		Elevator elevator0 = new Elevator(subsystemToElevator,elevatorToSubsystem,0,22);
-		Elevator elevator1 = new Elevator(subsystemToElevator,elevatorToSubsystem,1,22);
-		Elevator elevator2 = new Elevator(subsystemToElevator,elevatorToSubsystem,2,22);
-		Elevator elevator3 = new Elevator(subsystemToElevator,elevatorToSubsystem,3,22);
+		Elevator elevator0 = new Elevator(subsystemToElevator,elevatorToSubsystem,0,23);
+		Elevator elevator1 = new Elevator(subsystemToElevator,elevatorToSubsystem,1,23);
+		Elevator elevator2 = new Elevator(subsystemToElevator,elevatorToSubsystem,2,23);
+		Elevator elevator3 = new Elevator(subsystemToElevator,elevatorToSubsystem,3,23);
 
 	
 
