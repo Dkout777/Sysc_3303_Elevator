@@ -182,6 +182,7 @@ public class Elevator implements Runnable{
 							System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+ ": Is now opening the doors");
 							errorTimer = System.nanoTime();
 						}
+						errorTimer = System.nanoTime();
 						System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId + ": Current Floor = " + currentFloor);
 						
 							
