@@ -49,13 +49,14 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 	}
 
 	public static void main(String[] args) {
-		Thread elev0, elev1, elev2;
+		Thread elev0, elev1, elev2, elev3;
 		Channel subsystemToElevator = new Channel();
 		Channel elevatorToSubsystem = new Channel();
 
-		Elevator elevator0 = new Elevator(subsystemToElevator,elevatorToSubsystem,0,6);
-		Elevator elevator1 = new Elevator(subsystemToElevator,elevatorToSubsystem,1,6);
-		Elevator elevator2 = new Elevator(subsystemToElevator,elevatorToSubsystem,2,6);
+		Elevator elevator0 = new Elevator(subsystemToElevator,elevatorToSubsystem,0,22);
+		Elevator elevator1 = new Elevator(subsystemToElevator,elevatorToSubsystem,1,22);
+		Elevator elevator2 = new Elevator(subsystemToElevator,elevatorToSubsystem,2,22);
+		Elevator elevator3 = new Elevator(subsystemToElevator,elevatorToSubsystem,3,22);
 
 	
 
@@ -88,9 +89,11 @@ public class ElevatorSubsystem implements Runnable, ElevatorInterface {
 		elev0 = new Thread(elevator0, "Elevator 0");
 		elev1 = new Thread(elevator1, "Elevator 1");
 		elev2 = new Thread(elevator2, "Elevator 2");
+		elev3 = new Thread(elevator3, "Elevator 3");
 		elev0.start();
 		elev1.start();
 		elev2.start();
+		elev3.start();
 
 	}
 

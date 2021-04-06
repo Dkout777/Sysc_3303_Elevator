@@ -27,7 +27,8 @@ public class Elevator implements Runnable{
 	private volatile Channel subsystemToElevator;
 	private Channel elevatorToSubsystem;
 	private int currentFloor = 1;
-	private final int doorMoveTime =3; // time it takes to open/close doors
+	private final int doorOpenTime = 8; // time it takes to open+ offloading 
+	private final int doorCloseTime = 3;
 	private long startingTime;// Time taken when program is first run
 	private volatile ElevatorState currentState;
 	private boolean up = false;
@@ -41,6 +42,7 @@ public class Elevator implements Runnable{
 	 * @param elevatorChannel, receive the channel, elevatorChannel is used for putting inputs into scheduler, while receive is used for getting inputs.
 	 */
 	public Elevator(Channel subsystemToElevator, Channel elevatorToSubsystem,int elevatorId, int buttonAmount ) {
+		startingTime = System.nanoTime();
 		this.elevatorId = elevatorId;
 		this.subsystemToElevator = subsystemToElevator;
 		this.elevatorToSubsystem = elevatorToSubsystem;
@@ -71,7 +73,7 @@ public class Elevator implements Runnable{
 	 * method for printing out all active buttons.
 	 */
 	public void printButtons() {
-		System.out.println("The current buttons are lit up:");
+		System.out.println(getCurrentTime()+">"+" Elevator "+elevatorId +" has the current buttons are lit up:");
 		
 		for(int i = 0; i < buttons.length; i++) {
 			if(buttons[i] == true) {
@@ -115,6 +117,9 @@ public class Elevator implements Runnable{
 				
 			
 		}
+	public float getCurrentTime() {
+		return (System.nanoTime() - startingTime) / 1000000000;
+	}
 			
 			
 		
@@ -130,11 +135,10 @@ public class Elevator implements Runnable{
 	@Override
 	public void run() {
 		
-		startingTime = System.nanoTime();
 		Runnable task1 = () ->{this.checkForUpdate();};
 		new Thread(task1).start();
 		Data received = null;
-		System.out.println("elevator is waiting");
+		System.out.println(getCurrentTime()+">"+" elevator " + elevatorId +" is waiting");
 		stateStartTime = System.nanoTime();
 		
 		while (true) {
@@ -148,11 +152,11 @@ public class Elevator implements Runnable{
 				if(!subsystemToElevator.empty()) {
 					received = subsystemToElevator.getData(elevatorId,0);
 					if(received != null) {
-						System.out.println("Elevator " + elevatorId+ " got something");
+						System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+ " got something");
 						up = received.getUp();
 							
-						System.out.println("Elevator " + elevatorId+": The current floor is " + currentFloor);
-						System.out.println("Elevator " + elevatorId+": Doors are closing");
+						System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+": The current floor is " + currentFloor);
+						System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+": Doors are closing");
 							
 						currentState = ElevatorState.DoorsClosing;
 						stateStartTime = System.nanoTime();
@@ -175,10 +179,10 @@ public class Elevator implements Runnable{
 							stateStartTime = System.nanoTime();
 							currentState = ElevatorState.DoorOpening;
 							buttons[currentFloor] = false;
-							System.out.println("Elevator " + elevatorId+ ": Is now opening the doors");
+							System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+ ": Is now opening the doors");
 							errorTimer = System.nanoTime();
 						}
-						System.out.println("Elevator " + elevatorId + ": Current Floor = " + currentFloor);
+						System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId + ": Current Floor = " + currentFloor);
 						
 							
 					}
@@ -196,40 +200,49 @@ public class Elevator implements Runnable{
 			// This state simulates the time it takes to open doors
 			//Transitions to waiting state
 			case DoorOpening:
-				if((System.nanoTime()- stateStartTime)/1000000000 >= doorMoveTime) {
-					System.out.println("The elevator has opened the doors");
+				if((System.nanoTime()- stateStartTime)/1000000000 >= doorOpenTime) {
+					System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId+ " has opened the doors");
 					elevatorToSubsystem.putData(new Data(elevatorId));
 					currentState = ElevatorState.Waiting;
-					System.out.println("Elevator " + elevatorId +" Elevator is now waiting");
+					System.out.println(getCurrentTime()+">"+" Elevator " + elevatorId +" Elevator is now waiting");
 					stateStartTime = System.nanoTime();
 				}
 				else if(doorJam == true) {
-					System.out.println("Elevator " +elevatorId+ " door is jammed");
-					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
-					currentState = ElevatorState.OutOfOrder;
+					System.out.println(getCurrentTime()+">"+" Elevator " +elevatorId+ " door is jammed");
+					elevatorToSubsystem.putData(new Data(elevatorId, 4));  
+					stateStartTime = System.nanoTime();
+					doorJam = false;
+					
 				}
 				
 				break;
 			// This state simulates the time it takes to close the doors
 			//transitions to moving state
 			case DoorsClosing:
-				if((System.nanoTime()- stateStartTime)/1000000000 >= doorMoveTime) {
-					System.out.println("The elevator closed the doors.");
+				if((System.nanoTime()- stateStartTime)/1000000000 >= doorCloseTime) {
+					System.out.println(getCurrentTime()+">"+" Elevator " +elevatorId+" closed the doors.");
 					elevatorToSubsystem.putData(new Data(elevatorId, up));
 					currentState = ElevatorState.Moving; 
-					System.out.println("Elevator"+ elevatorId+ " is starting to move.");  
+					if(up) {
+						System.out.println(getCurrentTime()+">"+" Elevator "+ elevatorId+ "'s motor started moving it up.");  
+					}
+					else {
+						System.out.println(getCurrentTime()+">"+" Elevator "+ elevatorId+ "'s motor started moving it down.");  
+						
+					}
 					stateStartTime = System.nanoTime();
 				}
 				else if(doorJam == true) {
-					System.out.println("Elevator " +elevatorId+ " door is jammed");
+					System.out.println(getCurrentTime()+">"+" Elevator " +elevatorId+ " door is jammed");
 					elevatorToSubsystem.putData(new Data(elevatorId, 4));                      
-					currentState = ElevatorState.OutOfOrder;
+					stateStartTime = System.nanoTime();
+					doorJam = false;
 				}
 					
 				break;
 				// This is the state entered after any error occurs
 			case OutOfOrder:
-					System.out.println("Elevator " +elevatorId + ": Is out of order");
+					System.out.println(getCurrentTime()+">"+" Elevator " +elevatorId + ": Is out of order");
 					while(true) {             
 						
 					}

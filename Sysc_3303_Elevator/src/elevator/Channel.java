@@ -31,7 +31,7 @@ public class Channel {
 		int id = d.getElevatorId();
 		int requestType = d.getRequestType();
 		if((id == eID || eID == 4) && request == requestType) {
-			System.out.println("took"+d.toString()+" out of the channel");
+			//System.out.println("took"+d.toString()+" out of the channel");
 			Data dRet = d;
 			d = null;
 			notifyAll();
@@ -48,7 +48,7 @@ public class Channel {
 			return null;
 		}
 	
-		System.out.println("took"+d.toString()+" out of the channel");
+		//System.out.println("took"+d.toString()+" out of the channel");
 		Data dRet = d;
 		d = null;
 		notifyAll();
@@ -69,7 +69,7 @@ public class Channel {
 			}
 		}
 		this.d = d;
-		System.out.println("put "+d.toString()+" into the channel");
+		//System.out.println("put "+d.toString()+" into the channel");
 		notifyAll();
 	}
 	
