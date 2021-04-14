@@ -31,7 +31,7 @@ public interface ElevatorInterface extends Remote{
 		 */
 		public void buttonPushed(ArrayList<Integer> buttonList,int elevator) throws RemoteException;
 		/**
-		 * Lets scheduler know that a door failure has occured
+		 * Lets elevator know that a door failure has occured
 		 * @param elevator Id that identifies which elevator
 		 * @throws RemoteException
 		 */
